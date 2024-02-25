@@ -6,30 +6,28 @@ const palabras: string[] = ['getos', 'gatos', 'vocal', 'luzes', 'piano', 'ritmo'
 
 export const adivinarPalabra = (req: Request, res: Response): Response => {
   const intento: string = req.body.intento;
-  const palabraSeleccionada: string = req.palabraSecreta; // La palabra se asignará en el middleware
+  const palabraSeleccionada: string = req.palabraSecreta;
+  console.log("palabraselccionada", palabraSeleccionada)
 
   if (intento.length !== 5) {
     return res.status(400).json({ message: 'La palabra debe tener 5 letras.' });
   }
 
-  let resultado: string = verificarPalabra(intento, palabraSeleccionada);
+  let resultado: any[] = verificarPalabra(intento, palabraSeleccionada);
 
-  return res.json({
-    intento,
-    resultado,
-    message: resultado === palabraSeleccionada ? '¡Has acertado la palabra!' : 'Sigue intentando.'
-  });
+  return res.json(resultado);
 };
 
-const verificarPalabra = (intento: string, palabraSeleccionada: string): string => {
-  let resultado: string = '';
+
+const verificarPalabra = (intento: string, palabraSeleccionada: string): any[] => {
+  let resultado: any[] = [];
   for (let i = 0; i < 5; i++) {
     if (intento[i] === palabraSeleccionada[i]) {
-      resultado += `[${intento[i]}]`; // Letra correcta y en posición correcta
+      resultado.push({ "letter": intento[i].toUpperCase(), "value": 1 });
     } else if (palabraSeleccionada.includes(intento[i])) {
-      resultado += `(${intento[i]})`; // Letra correcta pero en posición incorrecta
+      resultado.push({ "letter": intento[i].toUpperCase(), "value": 2 });
     } else {
-      resultado += `${intento[i]}`; // Letra incorrecta
+      resultado.push({ "letter": intento[i].toUpperCase(), "value": 3 });
     }
   }
   return resultado;

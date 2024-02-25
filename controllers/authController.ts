@@ -13,12 +13,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     await user.save();
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(400).json({ error: 'An unknown error occurred' });
+    }
   }
 };
 
 
-export const login = async (req: Request, res: Response): Promise<Response> => {
+export const login = async (req: Request, res: Response): Promise<Response | void > => {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({ username });
@@ -28,6 +32,10 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '24h' });
       return res.json({ token });
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'An unknown error occurred' });
+      }
     }
   };

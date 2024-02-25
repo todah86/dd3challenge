@@ -14,6 +14,6 @@ const seleccionarPalabraSecreta = (req: any, res: any, next: any) => {
 };
 
 // Ruta para adivinar la palabra, protegida con JWT
-router.post('/adivinar', authenticateToken, seleccionarPalabraSecreta, gameController.adivinarPalabra);
+router.post('/adivinar',authenticateToken,seleccionarPalabraSecreta, gameController.adivinarPalabra);
 
 export default router;
