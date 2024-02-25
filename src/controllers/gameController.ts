@@ -39,12 +39,16 @@ const seleccionarNuevaPalabra = () => {
 };
 
 const verificarTiempoParaNuevaPalabra = async () => {
+  let tiempo = Date.now() - estadoJuego.tiempoSeleccion
+  console.log("este es el tiempo",tiempo)
   if (Date.now() - estadoJuego.tiempoSeleccion >= 300000) {
-    if(estadoJuego.intentos >= 5){
+    if(estadoJuego.intentos < 5){
+      if(estadoJuego.intentos == 0){
+        estadoJuego.jugadas++
+      }
       await guardarResultadoJuego(estadoJuego.userId);
     }
     seleccionarNuevaPalabra();
-    estadoJuego.jugadas++;
     return true;
   }
   return false;
@@ -98,7 +102,10 @@ export const adivinarPalabra = async (req: Request, res: Response): Promise<Resp
 };
 
 
-// Inicializar el juego
-seleccionarNuevaPalabra();
-setInterval(verificarTiempoParaNuevaPalabra, 60000);
+export const iniciarJuego = (userId: string) => {
+  estadoJuego.userId = userId;
+  seleccionarNuevaPalabra();
+  setInterval(verificarTiempoParaNuevaPalabra, 60000);
+};
+
 
