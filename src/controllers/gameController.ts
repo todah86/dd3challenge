@@ -9,8 +9,8 @@ import { obtenerEstadisticasUsuarioService } from '../services/gameResultService
 let juegos: { [userId: string]: Juego } = {};
 
 export const adivinarPalabra = async (req: Request, res: Response): Promise<Response> => {
-  const userId = res.locals.user._id;
-  const intento = req.body.user_word;
+  const userId = +res.locals.user._id;
+  const intento = req.body.user_word.toLowerCase();
 
   if (!juegos[userId]) {
     juegos[userId] = new Juego(userId);
@@ -27,12 +27,14 @@ export const adivinarPalabra = async (req: Request, res: Response): Promise<Resp
   const tiempoTranscurrido = `${minutosTranscurridos}:${segundosTranscurridos.toString().padStart(2, '0')}`;
 
   console.log("juegos intentos", juego.intentos)
+  console.log("esta es la palabra seleccionada", juego.palabraSeleccionada)
 
-  if (intento === juego.palabraSeleccionada || juego.intentos >= 5) {
+
+  if (intento == juego.palabraSeleccionada || juego.intentos >= 5) {
     console.log(juego.palabraSeleccionada)
     console.log("entro aqui", juego.intentos)
 
-    if (intento === juego.palabraSeleccionada && juego.intentos <= 5 ) {
+    if (intento == juego.palabraSeleccionada && juego.intentos <= 5 ) {
       console.log("gano el juego.")
       juego.jugadas++;
       juego.victorias++;
@@ -75,7 +77,7 @@ export const obtenerMejoresJugadores = async (req: Request, res: Response): Prom
 
 export const obtenerEstadisticasUsuario = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const userId = res.locals.user._id; // Asume que el userId se obtiene del token JWT
+    const userId =  +res.locals.user._id; // Asume que el userId se obtiene del token JWT
     const estadisticas = await obtenerEstadisticasUsuarioService(userId);
 
     return res.json(estadisticas);

@@ -8,7 +8,7 @@ export class User {
   }
   
   @PrimaryGeneratedColumn()
-  id: number | undefined;
+  id: number = 0;
 
   @Column({ type: 'varchar', length: 255 }) // Aquí usamos varchar para username
   username: string;

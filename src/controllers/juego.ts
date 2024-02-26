@@ -1,6 +1,6 @@
 import { cargarPalabras, guardarResultadoJuego } from '../services/juegoService';
 export class Juego {
-  userId: string;
+  userId: number;
   palabraSeleccionada: string;
   tiempoSeleccion: number;
   intentos: number;
@@ -8,7 +8,7 @@ export class Juego {
   victorias: number;
   palabras : string[];
 
-  constructor(userId: string) {
+  constructor(userId: number) {
     this.userId = userId;
     this.palabraSeleccionada = '';
     this.tiempoSeleccion = Date.now();
@@ -53,20 +53,27 @@ export class Juego {
   }
 
   async guardarResultadoJuego() {
-    await guardarResultadoJuego(this.userId, this.victorias, this.intentos, this.palabraSeleccionada, this.tiempoSeleccion);
+    await guardarResultadoJuego(this.userId, this.victorias, this.intentos, this.palabraSeleccionada, new Date(this.tiempoSeleccion));
   }
   
 
   verificarPalabra(intento: string): any[] {
     let resultado: any[] = [];
     for (let i = 0; i < 5; i++) {
-      if (intento[i] === this.palabraSeleccionada[i]) {
-        resultado.push({ "letter": intento[i].toUpperCase(), "value": 1 });
-      } else if (this.palabraSeleccionada.includes(intento[i])) {
-        resultado.push({ "letter": intento[i].toUpperCase(), "value": 2 });
-      } else {
-        resultado.push({ "letter": intento[i].toUpperCase(), "value": 3 });
+      try {
+        if (intento[i] === this.palabraSeleccionada[i]) {
+          resultado.push({ "letter": intento[i].toUpperCase(), "value": 1 });
+        } else if (this.palabraSeleccionada.includes(intento[i])) {
+          resultado.push({ "letter": intento[i].toUpperCase(), "value": 2 });
+        } else {
+          resultado.push({ "letter": intento[i].toUpperCase(), "value": 3 });
+        }
+        
+      } catch (error) {
+        resultado = [{mensaje :  "asegurese de colocar una palabra de cinco letras."}]
+        return resultado
       }
+      
     }
     return resultado;
   }
