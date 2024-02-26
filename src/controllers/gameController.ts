@@ -98,3 +98,20 @@ export const obtenerMejoresJugadores = async (req: Request, res: Response): Prom
   }
 };
 
+export const obtenerEstadisticasUsuario = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const userId = req.user._id; // Asume que el userId se obtiene del token JWT
+    const partidas = await GameResult.find({ userId: userId });
+    const jugadas = partidas.length;
+    const victorias = partidas.reduce((total, partida) => total + (partida.victorias > 0 ? 1 : 0), 0);
+
+    return res.json({
+      jugadas: jugadas,
+      victorias: victorias
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Error al obtener las estadísticas del usuario' });
+  }
+};
+
+
