@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel';
-import { iniciarJuego } from './gameController'; // Importa iniciarJuego
 
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -32,9 +31,6 @@ export const login = async (req: Request, res: Response): Promise<Response | voi
       return res.status(401).json({ message: 'Authentication failed' });
     }
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '24h' });
-
-    iniciarJuego(user._id); // Llama a iniciarJuego con el ID del usuario
-
     return res.json({ token });
   } catch (error) {
     if (error instanceof Error) {
