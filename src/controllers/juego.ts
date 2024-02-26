@@ -41,7 +41,7 @@ export class Juego {
     await GameResult.create({
       userId: this.userId,
       jugadas: 1,
-      victorias: this.victorias,
+      victorias: this.victorias > 0 ? 1 : 0,
       intentos: this.intentos,
       palabraSeleccionada: this.palabraSeleccionada,
       tiempoSeleccion: this.tiempoSeleccion
