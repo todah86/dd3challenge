@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { Juego } from './juego'; // Asegúrate de ajustar la ruta de importación según la estructura de tu proyecto
-import GameResult from '../models/gameResultModel';
 import { obtenerMejoresJugadores as obtenerMejoresJugadoresService } from '../services/gameResultService';
 import { obtenerEstadisticasUsuarioService } from '../services/gameResultService';
 

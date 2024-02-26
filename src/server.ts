@@ -17,13 +17,13 @@ app.use(express.json());
 createConnection()
   .then(() => {
     console.log('Conectado a la base de datos con TypeORM');
+    cargarDiccionario()
   })
   .catch(err => console.error('Error al conectar con la base de datos', err));
 
 mongoose.connect(process.env.MONGO_URI as string)
 .then(() => {
   console.log('Conectado a MongoDB');
-  cargarDiccionario(); // Cargar el diccionario después de conectarse a MongoDB
 })
 .catch(err => console.error('No se pudo conectar a MongoDB', err));
 

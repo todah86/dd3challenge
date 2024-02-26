@@ -1,10 +1,11 @@
+import { getRepository } from 'typeorm';
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import Diccionario from '../models/diccionarioModel';
+import { Diccionario } from '../entity/Diccionario'; // Asegúrate de importar la entidad correcta
 
 export const cargarDiccionario = async () => {
-  const existeDiccionario = await Diccionario.findOne();
+  const existeDiccionario = await getRepository(Diccionario).findOne({ where: { id: 1 } });
   if (!existeDiccionario) {
     const filePath = path.join(__dirname, '..', '..', 'src/assets', 'words.txt');
     const stream = fs.createReadStream(filePath, 'utf8');
@@ -28,7 +29,7 @@ export const cargarDiccionario = async () => {
       }
 
       if (contador === TAMANO_LOTE) {
-        await Diccionario.insertMany(lote);
+        await getRepository(Diccionario).insert(lote);
         lote = [];
         contador = 0;
       }
@@ -36,9 +37,9 @@ export const cargarDiccionario = async () => {
 
     // Insertar el último lote si no está vacío
     if (lote.length > 0) {
-      await Diccionario.insertMany(lote);
+      await getRepository(Diccionario).insert(lote);
     }
 
-    console.log('Diccionario cargado en MongoDB');
+    console.log('Diccionario cargado en PostgreSQL');
   }
 };
