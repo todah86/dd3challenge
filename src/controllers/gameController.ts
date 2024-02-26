@@ -10,7 +10,7 @@ import { obtenerEstadisticasUsuarioService } from '../services/gameResultService
 let juegos: { [userId: string]: Juego } = {};
 
 export const adivinarPalabra = async (req: Request, res: Response): Promise<Response> => {
-  const userId = req.user._id;
+  const userId = res.locals.user._id;
   const intento = req.body.user_word;
 
   if (!juegos[userId]) {
@@ -76,7 +76,7 @@ export const obtenerMejoresJugadores = async (req: Request, res: Response): Prom
 
 export const obtenerEstadisticasUsuario = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const userId = req.user._id; // Asume que el userId se obtiene del token JWT
+    const userId = res.locals.user._id; // Asume que el userId se obtiene del token JWT
     const estadisticas = await obtenerEstadisticasUsuarioService(userId);
 
     return res.json(estadisticas);
