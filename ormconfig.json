@@ -1,0 +1,11 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "dd3",
+    "database": "challenge",
+    "entities": ["src/entity/**/*.ts"],
+    "synchronize": true
+  }
+  

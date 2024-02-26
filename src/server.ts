@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes';
 import gameRoutes from './routes/gameRoutes';
 import { cargarDiccionario } from './services/diccionarioService';
+import { createConnection } from 'typeorm';
+
 
 
 dotenv.config();
@@ -11,6 +13,12 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+
+createConnection()
+  .then(() => {
+    console.log('Conectado a la base de datos con TypeORM');
+  })
+  .catch(err => console.error('Error al conectar con la base de datos', err));
 
 mongoose.connect(process.env.MONGO_URI as string)
 .then(() => {

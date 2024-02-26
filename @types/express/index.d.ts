@@ -1,17 +1,12 @@
-// types.d.ts
+// @types/types.d.ts
 
 import { JwtPayload } from 'jsonwebtoken';
 
-declare namespace Express {
-  export interface Request {
-    user?: JwtPayload | string;
-  }
-}
-
-
-declare namespace Express {
-    export interface Request {
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
       palabraSecreta?: string;
     }
   }
-  
+}
