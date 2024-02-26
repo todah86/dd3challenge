@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { Juego } from './juego'; // Asegúrate de ajustar la ruta de importación según la estructura de tu proyecto
 import GameResult from '../models/gameResultModel';
-import User from '../models/userModel';
+import { obtenerMejoresJugadores as obtenerMejoresJugadoresService } from '../services/gameResultService';
+import { obtenerEstadisticasUsuarioService } from '../services/gameResultService';
+
+
 
 
 let juegos: { [userId: string]: Juego } = {};
@@ -63,55 +66,20 @@ export const adivinarPalabra = async (req: Request, res: Response): Promise<Resp
 
 export const obtenerMejoresJugadores = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const mejoresJugadores = await GameResult.aggregate([
-      {
-        $group: {
-          _id: '$userId',
-          puntajeTotal: { $sum: '$victorias' }
-        }
-      },
-      {
-        $sort: { puntajeTotal: -1 }
-      },
-      {
-        $limit: 10
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'usuario'
-        }
-      },
-      {
-        $unwind: '$usuario'
-      },
-      {
-        $project: {
-          _id: 0,
-          username: '$usuario.username',
-          puntajeTotal: 1
-        }
-      }
-    ]);
+    const mejoresJugadores = await obtenerMejoresJugadoresService();
     return res.json(mejoresJugadores);
   } catch (error) {
     return res.status(500).json({ error: 'Error al obtener los mejores jugadores' });
   }
 };
 
+
 export const obtenerEstadisticasUsuario = async (req: Request, res: Response): Promise<Response> => {
   try {
     const userId = req.user._id; // Asume que el userId se obtiene del token JWT
-    const partidas = await GameResult.find({ userId: userId });
-    const jugadas = partidas.length;
-    const victorias = partidas.reduce((total, partida) => total + (partida.victorias > 0 ? 1 : 0), 0);
+    const estadisticas = await obtenerEstadisticasUsuarioService(userId);
 
-    return res.json({
-      jugadas: jugadas,
-      victorias: victorias
-    });
+    return res.json(estadisticas);
   } catch (error) {
     return res.status(500).json({ error: 'Error al obtener las estadísticas del usuario' });
   }
