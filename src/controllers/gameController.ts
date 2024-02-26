@@ -25,6 +25,7 @@ export const adivinarPalabra = async (req: Request, res: Response): Promise<Resp
   const tiempoTranscurrido = `${minutosTranscurridos}:${segundosTranscurridos.toString().padStart(2, '0')}`;
 
   if (intento === juego.palabraSeleccionada || juego.intentos >= 5) {
+    console.log(juego.palabraSeleccionada)
 
     if (intento === juego.palabraSeleccionada && juego.intentos <= 5 ) {
       console.log("gano el juego.")
