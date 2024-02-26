@@ -38,20 +38,16 @@ export class Juego {
   }
 
   async guardarResultadoJuego() {
-    await GameResult.findOneAndUpdate(
-      { userId: this.userId },
-      {
-        $set: {
-          jugadas: this.jugadas,
-          victorias: this.victorias,
-          intentos: this.intentos,
-          palabraSeleccionada: this.palabraSeleccionada,
-          tiempoSeleccion: this.tiempoSeleccion
-        }
-      },
-      { upsert: true, new: true }
-    );
+    await GameResult.create({
+      userId: this.userId,
+      jugadas: 1,
+      victorias: this.victorias,
+      intentos: this.intentos,
+      palabraSeleccionada: this.palabraSeleccionada,
+      tiempoSeleccion: this.tiempoSeleccion
+    });
   }
+  
 
   verificarPalabra(intento: string): any[] {
     let resultado: any[] = [];
