@@ -13,7 +13,7 @@ Para instalar las dependencias del proyecto, ejecuta el siguiente comando en la 
 ```bash
 npm install
 
-Configuración
+## Configuración
 Para configurar la conexión a la base de datos, debes editar el archivo ormconfig.json en la raíz del directorio del proyecto. Asegúrate de reemplazar los valores de username y password con los correspondientes a tu máquina local:
 
 archivo .env
@@ -27,12 +27,12 @@ tambien existe una version en la rama feature/postgres donde esta con postgres.
 
 
 
-Ejecución en desarrollo
+## Ejecución en desarrollo
 Para iniciar el servidor en modo de desarrollo, ejecuta el siguiente comando:
 
 npm run start:dev
 
-
+## Ejemplos
 ejemplo de curl para registrarse
 curl --location 'http://localhost:3000/api/user/register' \
 --header 'Content-Type: application/json' \
