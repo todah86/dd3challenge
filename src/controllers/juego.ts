@@ -1,3 +1,4 @@
+import Diccionario from '../models/diccionarioModel';
 import GameResult from '../models/gameResultModel';
 
 export class Juego {
@@ -7,6 +8,7 @@ export class Juego {
   intentos: number;
   jugadas: number;
   victorias: number;
+  palabras : string[];
 
   constructor(userId: string) {
     this.userId = userId;
@@ -16,14 +18,31 @@ export class Juego {
     this.jugadas = 0;
     this.victorias = 0;
     this.seleccionarNuevaPalabra();
+    this.palabras = [];
+    this.cargarPalabras();
+  }
+
+  async cargarPalabras() {
+    const palabrasDocumentos = await Diccionario.aggregate([
+      { $match: { palabra: { $regex: /^.{1,5}$/, $options: 'i' } } }, // Filtrar palabras con máximo 5 letras
+      { $sample: { size: 280 } } 
+    ]);
+    this.palabras = palabrasDocumentos.map(doc => doc.palabra);
+    this.seleccionarNuevaPalabra();
   }
 
   seleccionarNuevaPalabra() {
-    const palabras: string[] = ['getos', 'gatos', 'vocal', 'luzes', 'piano', 'ritmo', 'sabor', 'trenz', 'unido', 'virus'];
-    this.palabraSeleccionada = palabras[Math.floor(Math.random() * palabras.length)];
-    this.tiempoSeleccion = Date.now();
-    this.intentos = 0;
+    if (this.palabras.length > 0) {
+      const indiceAleatorio = Math.floor(Math.random() * this.palabras.length);
+      this.palabraSeleccionada = this.palabras[indiceAleatorio];
+      console.log("la palabra seleccionada es", this.palabraSeleccionada)
+      this.palabras.splice(indiceAleatorio, 1); // Eliminar la palabra seleccionada del array
+      this.tiempoSeleccion = Date.now();
+      this.intentos = 0;
+    }
   }
+
+  
 
   async verificarTiempoParaNuevaPalabra() {
     if (Date.now() - this.tiempoSeleccion >= 300000) {
