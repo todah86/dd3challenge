@@ -8,7 +8,7 @@ let juegos: { [userId: string]: Juego } = {};
 
 export const adivinarPalabra = async (req: Request, res: Response): Promise<Response> => {
   const userId = req.user._id;
-  const intento = req.body.intento;
+  const intento = req.body.user_word;
 
   if (!juegos[userId]) {
     juegos[userId] = new Juego(userId);
@@ -24,8 +24,11 @@ export const adivinarPalabra = async (req: Request, res: Response): Promise<Resp
   const segundosTranscurridos = Math.floor(((Date.now() - juego.tiempoSeleccion) % 60000) / 1000);
   const tiempoTranscurrido = `${minutosTranscurridos}:${segundosTranscurridos.toString().padStart(2, '0')}`;
 
+  console.log("juegos intentos", juego.intentos)
+
   if (intento === juego.palabraSeleccionada || juego.intentos >= 5) {
     console.log(juego.palabraSeleccionada)
+    console.log("entro aqui", juego.intentos)
 
     if (intento === juego.palabraSeleccionada && juego.intentos <= 5 ) {
       console.log("gano el juego.")

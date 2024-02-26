@@ -1,6 +1,4 @@
-import Diccionario from '../models/diccionarioModel';
-import GameResult from '../models/gameResultModel';
-
+import { cargarPalabras, guardarResultadoJuego } from '../services/juegoService';
 export class Juego {
   userId: string;
   palabraSeleccionada: string;
@@ -17,17 +15,13 @@ export class Juego {
     this.intentos = 0;
     this.jugadas = 0;
     this.victorias = 0;
-    this.seleccionarNuevaPalabra();
     this.palabras = [];
     this.cargarPalabras();
   }
 
   async cargarPalabras() {
-    const palabrasDocumentos = await Diccionario.aggregate([
-      { $match: { palabra: { $regex: /^.{1,5}$/, $options: 'i' } } }, // Filtrar palabras con máximo 5 letras
-      { $sample: { size: 280 } } 
-    ]);
-    this.palabras = palabrasDocumentos.map(doc => doc.palabra);
+    console.log("cargarPalabras")
+    this.palabras = await cargarPalabras();
     this.seleccionarNuevaPalabra();
   }
 
@@ -37,8 +31,10 @@ export class Juego {
       this.palabraSeleccionada = this.palabras[indiceAleatorio];
       console.log("la palabra seleccionada es", this.palabraSeleccionada)
       this.palabras.splice(indiceAleatorio, 1); // Eliminar la palabra seleccionada del array
+      if(this.intentos != 1 || (Date.now() - this.tiempoSeleccion >= 300000)){
       this.tiempoSeleccion = Date.now();
       this.intentos = 0;
+      }
     }
   }
 
@@ -57,14 +53,7 @@ export class Juego {
   }
 
   async guardarResultadoJuego() {
-    await GameResult.create({
-      userId: this.userId,
-      jugadas: 1,
-      victorias: this.victorias > 0 ? 1 : 0,
-      intentos: this.intentos,
-      palabraSeleccionada: this.palabraSeleccionada,
-      tiempoSeleccion: this.tiempoSeleccion
-    });
+    await guardarResultadoJuego(this.userId, this.victorias, this.intentos, this.palabraSeleccionada, this.tiempoSeleccion);
   }
   
 
